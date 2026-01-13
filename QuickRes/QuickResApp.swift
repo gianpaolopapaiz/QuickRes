@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct QuickResApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
     var body: some Scene {
-        WindowGroup {
-            ContentView()
+        // Empty Settings scene - actual settings window is managed by AppDelegate
+        Settings {
+            EmptyView()
         }
     }
 }

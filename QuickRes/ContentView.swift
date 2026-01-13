@@ -7,18 +7,5 @@
 
 import SwiftUI
 
-struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
-    }
-}
-
-#Preview {
-    ContentView()
-}
+// This file is kept for potential future use but the menu is now handled by AppDelegate using NSMenu.
+// The SwiftUI MenuContentView was replaced with native NSMenu for better left-click/right-click handling.
