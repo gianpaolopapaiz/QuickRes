@@ -29,7 +29,7 @@ struct SettingsView: View {
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                         
-                        Link("github.com/gianpaolopapaiz/QuickRes", destination: URL(string: "https://github.com/gianpaolopapaiz/QuickRes")!)
+                        Link("Github", destination: URL(string: "https://github.com/gianpaolopapaiz/QuickRes")!)
                             .font(.subheadline)
                     }
                     

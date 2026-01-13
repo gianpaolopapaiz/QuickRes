@@ -17,8 +17,12 @@ class SettingsManager: ObservableObject {
     
     private let showInDockKey = "showInDock"
     
+    /// Flag to prevent didSet from triggering during programmatic updates
+    private var isRefreshing = false
+    
     @Published var launchAtLogin: Bool {
         didSet {
+            guard !isRefreshing else { return }
             setLaunchAtLogin(launchAtLogin)
         }
     }
@@ -33,7 +37,7 @@ class SettingsManager: ObservableObject {
     @Published var errorMessage: String?
     
     private init() {
-        // Initialize with current state
+        // Initialize with current state (no didSet triggered during init)
         launchAtLogin = SMAppService.mainApp.status == .enabled
         
         // Default to not showing in dock (menu bar app)
@@ -51,7 +55,11 @@ class SettingsManager: ObservableObject {
     
     /// Refreshes the launch at login state from the system
     func refresh() {
+        isRefreshing = true
         launchAtLogin = SMAppService.mainApp.status == .enabled
+        isRefreshing = false
+        // Clear any stale error when refreshing
+        errorMessage = nil
     }
     
     /// Sets the launch at login state
@@ -66,9 +74,9 @@ class SettingsManager: ObservableObject {
         } catch {
             errorMessage = "Failed to update login item: \(error.localizedDescription)"
             // Revert the published value to match actual state
-            DispatchQueue.main.async {
-                self.launchAtLogin = SMAppService.mainApp.status == .enabled
-            }
+            isRefreshing = true
+            launchAtLogin = SMAppService.mainApp.status == .enabled
+            isRefreshing = false
         }
     }
 }
