@@ -28,6 +28,9 @@ struct SettingsView: View {
                         Text("Version 1.0")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
+                        
+                        Link("github.com/gianpaolopapaiz/QuickRes", destination: URL(string: "https://github.com/gianpaolopapaiz/QuickRes")!)
+                            .font(.subheadline)
                     }
                     
                     Spacer()
