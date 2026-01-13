@@ -39,11 +39,11 @@ struct SettingsView: View {
             Section {
                 Toggle("Launch at Login", isOn: $settingsManager.launchAtLogin)
                     .toggleStyle(.switch)
+                
+                Toggle("Show in Dock", isOn: $settingsManager.showInDock)
+                    .toggleStyle(.switch)
             } header: {
                 Text("General")
-            } footer: {
-                Text("Automatically start QuickRes when you log in to your Mac.")
-                    .foregroundColor(.secondary)
             }
             
             if let error = settingsManager.errorMessage {
@@ -55,7 +55,7 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
-        .frame(width: 350, height: 280)
+        .frame(width: 350, height: 320)
         .onAppear {
             settingsManager.refresh()
         }

@@ -15,6 +15,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var settingsWindow: NSWindow?
     
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // Apply dock visibility setting
+        SettingsManager.shared.applyDockVisibility()
+        
         setupStatusItem()
     }
     

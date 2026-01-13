@@ -7,6 +7,7 @@
 
 import Foundation
 import ServiceManagement
+import AppKit
 import Combine
 
 /// Manages app settings including launch at login
@@ -14,9 +15,18 @@ class SettingsManager: ObservableObject {
     
     static let shared = SettingsManager()
     
+    private let showInDockKey = "showInDock"
+    
     @Published var launchAtLogin: Bool {
         didSet {
             setLaunchAtLogin(launchAtLogin)
+        }
+    }
+    
+    @Published var showInDock: Bool {
+        didSet {
+            UserDefaults.standard.set(showInDock, forKey: showInDockKey)
+            applyDockVisibility()
         }
     }
     
@@ -25,6 +35,18 @@ class SettingsManager: ObservableObject {
     private init() {
         // Initialize with current state
         launchAtLogin = SMAppService.mainApp.status == .enabled
+        
+        // Default to not showing in dock (menu bar app)
+        showInDock = UserDefaults.standard.object(forKey: showInDockKey) as? Bool ?? false
+    }
+    
+    /// Applies the dock visibility setting
+    func applyDockVisibility() {
+        if showInDock {
+            NSApp.setActivationPolicy(.regular)
+        } else {
+            NSApp.setActivationPolicy(.accessory)
+        }
     }
     
     /// Refreshes the launch at login state from the system
