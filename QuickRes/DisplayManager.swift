@@ -140,16 +140,13 @@ class DisplayManager: ObservableObject {
         
         for displayID in sortedDisplayIDs {
             let isBuiltIn = CGDisplayIsBuiltin(displayID) != 0
-            let externalIndex: Int
             let name: String
             
             if isBuiltIn {
                 builtInCount += 1
-                externalIndex = 0
                 name = getDisplayName(displayID: displayID, isBuiltIn: true, externalIndex: 0)
             } else {
                 externalCount += 1
-                externalIndex = externalCount
                 name = getDisplayName(displayID: displayID, isBuiltIn: false, externalIndex: externalCount)
             }
             
@@ -163,7 +160,7 @@ class DisplayManager: ObservableObject {
     /// Refreshes a single display's current resolution and available resolutions
     private func refreshDisplay(displayID: CGDirectDisplayID, name: String, isBuiltIn: Bool) -> Display {
         // Get current resolution
-        var currentResolution: Resolution? = nil
+        var currentResolution: Resolution?
         if let mode = CGDisplayCopyDisplayMode(displayID) {
             currentResolution = Resolution(mode: mode)
         }
