@@ -91,35 +91,10 @@ class DisplayManager: ObservableObject {
     
     /// Gets the native aspect ratio of the display (based on physical dimensions, not current resolution)
     private func getNativeAspectRatio(displayID: CGDirectDisplayID) -> Double? {
-        // Get all modes to find the native resolution (highest pixel dimensions)
-        let options: CFDictionary = [:] as CFDictionary
-        guard let modes = CGDisplayCopyAllDisplayModes(displayID, options) as? [CGDisplayMode] else {
-            // Fallback: use display bounds aspect ratio
-            let bounds = CGDisplayBounds(displayID)
-            guard bounds.height > 0 else { return nil }
-            return Double(bounds.width) / Double(bounds.height)
-        }
-        
-        // Find the mode with the highest pixel dimensions (native resolution)
-        // This gives us the true physical aspect ratio
-        var maxPixelWidth: Int = 0
-        var maxPixelHeight: Int = 0
-        
-        for mode in modes {
-            if mode.pixelWidth > maxPixelWidth {
-                maxPixelWidth = mode.pixelWidth
-                maxPixelHeight = mode.pixelHeight
-            }
-        }
-        
-        guard maxPixelHeight > 0 else {
-            // Fallback: use display bounds aspect ratio
-            let bounds = CGDisplayBounds(displayID)
-            guard bounds.height > 0 else { return nil }
-            return Double(bounds.width) / Double(bounds.height)
-        }
-        
-        return Double(maxPixelWidth) / Double(maxPixelHeight)
+        let nativeWidth = CGDisplayPixelsWide(displayID)
+        let nativeHeight = CGDisplayPixelsHigh(displayID)
+        guard nativeHeight > 0 else { return nil }
+        return Double(nativeWidth) / Double(nativeHeight)
     }
     
     /// Gets the display name from the system
