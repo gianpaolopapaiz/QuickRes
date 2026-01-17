@@ -44,23 +44,44 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(headerItem)
         menu.addItem(NSMenuItem.separator())
         
-        // Resolution options
+        // Refresh displays
         displayManager.refresh()
-        for resolution in displayManager.availableResolutions {
-            let item = NSMenuItem(
-                title: resolution.description,
-                action: #selector(resolutionSelected(_:)),
-                keyEquivalent: ""
-            )
-            item.target = self
-            item.representedObject = resolution
+        
+        // Add each display as a section with its resolutions
+        for display in displayManager.displays {
+            // Display name as section header
+            let displayHeaderItem = NSMenuItem(title: display.name, action: nil, keyEquivalent: "")
+            displayHeaderItem.isEnabled = false
+            menu.addItem(displayHeaderItem)
             
-            // Mark current resolution with checkmark
-            if resolution.id == displayManager.currentResolution?.id {
-                item.state = .on
+            // Resolution options for this display
+            for resolution in display.availableResolutions {
+                let item = NSMenuItem(
+                    title: resolution.description,
+                    action: #selector(resolutionSelected(_:)),
+                    keyEquivalent: ""
+                )
+                item.target = self
+                
+                // Store both resolution and displayID
+                let menuItemData = DisplayManager.ResolutionMenuItem(
+                    resolution: resolution,
+                    displayID: display.id
+                )
+                item.representedObject = menuItemData
+                
+                // Mark current resolution with checkmark
+                if resolution.id == display.currentResolution?.id {
+                    item.state = .on
+                }
+                
+                menu.addItem(item)
             }
             
-            menu.addItem(item)
+            // Add separator between displays (except after last display)
+            if display.id != displayManager.displays.last?.id {
+                menu.addItem(NSMenuItem.separator())
+            }
         }
         
         menu.addItem(NSMenuItem.separator())
@@ -79,8 +100,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
     
     @objc private func resolutionSelected(_ sender: NSMenuItem) {
-        guard let resolution = sender.representedObject as? DisplayManager.Resolution else { return }
-        displayManager.setResolution(resolution)
+        guard let menuItemData = sender.representedObject as? DisplayManager.ResolutionMenuItem else { return }
+        displayManager.setResolution(menuItemData.resolution, for: menuItemData.displayID)
     }
     
     @objc private func openSettings() {
