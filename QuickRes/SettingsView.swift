@@ -10,6 +10,10 @@ import SwiftUI
 struct SettingsView: View {
     @ObservedObject var settingsManager = SettingsManager.shared
     
+    private var appVersion: String {
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
+    }
+    
     var body: some View {
         Form {
             // About section
@@ -25,7 +29,7 @@ struct SettingsView: View {
                             .font(.title2)
                             .fontWeight(.semibold)
                         
-                        Text("Version 1.0")
+                        Text("Version \(appVersion)")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                         
